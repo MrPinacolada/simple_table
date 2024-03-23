@@ -1,4 +1,11 @@
-@import "./base.css";
+@import "./base.scss";
+
+@font-face {
+  font-family: "GraphikLCG-Regular";
+  src: url("./fonts/GraphikLCG-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
 
 #app {
   max-width: 100vw;

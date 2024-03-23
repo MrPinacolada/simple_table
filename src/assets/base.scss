@@ -6,14 +6,10 @@
     --gray: #999999;
     --butt-gray: #f2f1f3;
     --dark-blue: #132639;
+    --white: #ffffff;
 }
 
-@font-face {
-    font-family: "GraphikLCG-Regular";
-    src: url("./fonts/GraphikLCG-Regular.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
-}
+
 
 * {
     box-sizing: border-box;

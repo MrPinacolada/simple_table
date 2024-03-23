@@ -6,4 +6,6 @@
 import { RouterLink, RouterView } from "vue-router"
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss">
+
+</style>

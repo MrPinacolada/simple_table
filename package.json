@@ -22,6 +22,7 @@
     "@tsconfig/node20": "^20.1.2",
     "@types/node": "^20.11.28",
     "@vitejs/plugin-vue": "^5.0.4",
+    "@vue/language-plugin-pug": "^2.0.7",
     "@vue/tsconfig": "^0.5.1",
     "npm-run-all2": "^6.1.2",
     "typescript": "~5.4.0",

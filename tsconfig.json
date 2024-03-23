@@ -1,11 +1,14 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
+    "files": [],
+    "vueCompilerOptions": {
+        "plugins": ["@vue/language-plugin-pug"]
     },
-    {
-      "path": "./tsconfig.app.json"
-    }
-  ]
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        },
+        {
+            "path": "./tsconfig.app.json"
+        }
+    ]
 }
