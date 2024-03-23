@@ -1,5 +1,5 @@
 <template lang="pug">
-    header 
+    header.head-login 
         div.container
             img(src='../assets/image/base/logo.svg' style='width:243px;height:25px;' alt='logo')
             div.container-butts
@@ -19,12 +19,12 @@ export default {
 </script>
 
 <style lang="scss">
-header {
+.head-login {
     .container {
         display: flex;
         width: 100%;
         height: 80px;
-        background: transparent;
+        background: #f2f2f2;
         padding-top: 40px;
         padding-left: 40px;
         padding-right: 40px;

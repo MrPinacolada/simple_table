@@ -1,4 +1,5 @@
 import axios from "axios"
+import { table_store } from "@/store/table_store"
 
 interface ApiFunctionArgs {
     url: string
@@ -6,18 +7,21 @@ interface ApiFunctionArgs {
     body?: Record<string, any>
     headers?: Record<string, any>
 }
-//у вас не нужных заголовков, поэтому вот так(
-const base_url =
-    "https://cors-anywhere.herokuapp.com/https://dev-ar.zonesmart.com/api"
+
+const api = axios.create({
+    baseURL: "https://dev-ar.zonesmart.com/api/",
+    timeout: 5000,
+})
+
+let counter = 0
 
 export const apiGet = async ({ url, query, headers }: ApiFunctionArgs) => {
     try {
-        const set_url = base_url + "/" + url
-
-        const response = await axios.get(set_url + `?${setQuery(query)}`, {
+        const response = await api.get(url + `?${setQuery(query)}`, {
             headers: {
                 ...headers,
                 Accept: "application/json",
+                authorization: `JWT ${table_store.state.tokens_access}`,
             },
         })
 
@@ -26,6 +30,26 @@ export const apiGet = async ({ url, query, headers }: ApiFunctionArgs) => {
         return { data }
     } catch (error: any) {
         console.error(error)
+        counter = counter + 1
+        if (error.response.status === 401 && counter < 5) {
+            console.log("counter: ", counter)
+            try {
+                await refreshAccessToken()
+                const response = await apiGet({
+                    url: url,
+                    query: query,
+                    headers: headers,
+                })
+
+                const data: any = response.data
+                return { data }
+            } catch (refreshError) {
+                console.error(refreshError)
+                throw refreshError
+            }
+        } else {
+            throw error
+        }
     }
 }
 
@@ -36,23 +60,33 @@ export const apiPost = async ({
     headers,
 }: ApiFunctionArgs) => {
     try {
-        const set_url = base_url + "/" + url
-        const response = await axios.post(
-            set_url + `?${setQuery(query)}`,
-            body,
-            {
-                headers: {
-                    ...headers,
-                    Accept: "application/json",
-                },
-            }
-        )
+        const response = await api.post(url + `?${setQuery(query)}`, body, {
+            headers: {
+                ...headers,
+                Accept: "application/json",
+            },
+        })
 
         const data = response.data
 
         return { data }
     } catch (error: any) {
         console.log(error)
+    }
+}
+
+const refreshAccessToken = async () => {
+    try {
+        const data = await apiPost({
+            url: "/user/jwt/refresh/",
+            body: { refresh: table_store.state.tokens_refresh },
+        })
+        if (!data?.data) return
+        console.log(data)
+        // accessToken = response.data.access
+        // return accessToken
+    } catch (error) {
+        console.error(error)
     }
 }
 

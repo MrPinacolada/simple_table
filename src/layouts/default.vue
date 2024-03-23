@@ -1,5 +1,5 @@
 <template lang="pug">
-    header 
+    header.head-default 
         section.container
             nav.container-butts   
                 button
@@ -27,7 +27,7 @@ export default {
 </script>
 
 <style lang="scss">
-header {
+.head-default {
     .container {
         display: flex;
         width: 100%;

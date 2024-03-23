@@ -38,6 +38,7 @@
 <script lang="ts">
 import default_layout from "@/layouts/default.vue"
 import base_input from "@/components/base/base_input.vue"
+import { apiGet } from "@/services/api"
 export default {
     name: "dashboard",
 
@@ -48,20 +49,19 @@ export default {
     data() {
         return {
             columns: [
-                "Column 1",
-                "Column 2",
-                "Column 3",
-                "Column 4",
-                "Column 5",
-                "Column 6",
-                "Column 7",
-                "Column 8",
-                "Column 9",
-                "Column 10",
+                "Фото",
+                "Артикул продавца",
+                "Бренд",
+                "Название",
+                "Остаток, шт",
+                "Текущая цена",
+                "Минимальная цена",
+                "Максимальная цена",
+                "Удалить",
             ],
             items: [
                 {
-                    data1: "Data 1",
+                    images: "Data 1",
                     data2: "Data 2",
                     data3: "Data 3",
                     data4: "Data 4",
@@ -70,10 +70,23 @@ export default {
                     data7: "Data 7",
                     data8: "Data 8",
                     data9: "Data 9",
-                    data10: "Data 10",
                 },
             ],
         }
+    },
+    methods: {
+        async getTableData() {
+            try {
+                const data = await apiGet({ url: "product/" })
+                if (!data?.data) return
+                console.log(data.data)
+            } catch (error) {
+                console.log("error: ", error)
+            }
+        },
+    },
+    mounted() {
+        this.getTableData()
     },
 }
 </script>
