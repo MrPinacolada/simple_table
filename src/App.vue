@@ -28,6 +28,7 @@ export default {
                 refresh: getLocalStorage("tokens_refresh"),
             }
             table_store.commit("SET_AUTH", auth)
+            table_store.commit("SET_USERNAME", getLocalStorage("user_name"))
             this.$router.push("/dashboard")
         }
     },
