@@ -1,5 +1,5 @@
 <template lang="pug">
-    div.wrapper
+    div.input-wrapper
         div.top
             slot(name='top_slot')
         input(v-model='input_value' type='text' :placeholder='placeholder' @change="handleInput")
@@ -40,10 +40,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.wrapper {
+.input-wrapper {
     display: grid;
     gap: 8px;
     grid-template-columns: 1fr;
+    width: 100%;
     input {
         width: v-bind(wh);
         height: v-bind(he);
