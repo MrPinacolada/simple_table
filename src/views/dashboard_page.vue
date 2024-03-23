@@ -30,7 +30,25 @@
                         tr(v-for="(item, index) in items" :key="index")
                             td.column-checkbox
                                  input(type="checkbox")
-                            td(v-for="(value, key) in item" :key="key") {{ value }}
+                            td.column-images
+                                img(:src='item.images?item.images[0]:""' lazy alt='photo')
+                            td.column-id
+                                p.font-base {{ item.remote_id }}
+                            td.column-brand
+                                p.font-base {{ item.brand_name }}
+                            td.column-title
+                                p.font-base {{ item.title}}
+                            td.column-quantity
+                                p.font-base {{ item.quantity}}
+                            td.column-price
+                                p.font-base {{ item.price}}
+                            td.column-min
+                                base_input(he='30px' wh='135px' placeholder='₽' :value='item.min_price'  )
+                            td.column-max
+                                base_input(he='30px' wh='135px' placeholder='₽' :value='item.max_price'  )
+                            td.column-delete
+                                img(src="../assets/image/icons/delete.svg")
+
 
 
 </template>
@@ -61,7 +79,7 @@ export default {
             ],
             items: [
                 {
-                    images: "Data 1",
+                    data1: "Data 1",
                     data2: "Data 2",
                     data3: "Data 3",
                     data4: "Data 4",
@@ -79,6 +97,7 @@ export default {
             try {
                 const data = await apiGet({ url: "product/" })
                 if (!data?.data) return
+                this.items = data.data.results
                 console.log(data.data)
             } catch (error) {
                 console.log("error: ", error)
@@ -147,6 +166,19 @@ export default {
                         width: 50px;
                     }
                     &-regular {
+                    }
+                    &-images {
+                        img {
+                            width: 50px;
+                            height: 50px;
+                            object-fit: contain;
+                        }
+                    }
+                    &-delete {
+                        img {
+                            width: 25px;
+                            height: 25px;
+                        }
                     }
                 }
             }

@@ -2,7 +2,7 @@
     div.input-wrapper
         div.top
             slot(name='top_slot')
-        input(v-model='input_value' type='text' :placeholder='placeholder' @change="handleInput")
+        input(v-model='input_value' type='text' :placeholder='placeholder' @input="handleInput")
         div.bottom
             slot(name='bottom_slot')
 
@@ -24,10 +24,14 @@ export default {
             type: String,
             required: false,
         },
+        value: {
+            type: String,
+            required: false,
+        },
     },
     data() {
         return {
-            input_value: "",
+            input_value: this.value ?? "",
         }
     },
     methods: {
