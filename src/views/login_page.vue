@@ -45,7 +45,6 @@ export default {
             disabled: true,
         }
     },
-    watch: {},
     methods: {
         validateInput(login: string, password: string) {
             this.disabled = !(cleanSpace(login) && cleanSpace(password))
@@ -67,8 +66,10 @@ export default {
                         password: this.password,
                     },
                 })
-                table_store.commit("SET_AUTH", data)
+                if (!data) return
+                table_store.commit("SET_AUTH", data.data)
                 table_store.commit("SET_USERNAME", this.login)
+                this.$router.push("/dashboard")
             } catch (error) {
                 console.log(error)
             }

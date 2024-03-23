@@ -2,10 +2,36 @@
     <RouterView />
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { RouterLink, RouterView } from "vue-router"
+import { getLocalStorage } from "@/services/localStorage"
+import { table_store } from "@/store/table_store"
+
+export default {
+    name: "default",
+    data() {
+        return {}
+    },
+    methods: {
+        isSignedIn() {
+            return (
+                getLocalStorage("tokens_access") &&
+                getLocalStorage("tokens_refresh")
+            )
+        },
+    },
+    mounted() {
+        // localStorage.clear()
+        if (this.isSignedIn()) {
+            const auth = {
+                access: getLocalStorage("tokens_access"),
+                refresh: getLocalStorage("tokens_refresh"),
+            }
+            table_store.commit("SET_AUTH", auth)
+            this.$router.push("/dashboard")
+        }
+    },
+}
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

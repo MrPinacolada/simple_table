@@ -1,4 +1,5 @@
 import { createStore } from "vuex"
+import { writePersistentLocalStorage } from "@/services/localStorage"
 
 export const table_store = createStore({
     state() {
@@ -12,14 +13,17 @@ export const table_store = createStore({
     mutations: {
         SET_AUTH(
             state,
-            data: { tokens_access: string; tokens_refresh: string }
+            data: { access: string; refresh: string }
         ) {
             state.isAuthenticated = true
-            console.log('state.isAuthenticated: ', state.isAuthenticated);
-            state.tokens_access = data.tokens_access
-            state.tokens_refresh = data.tokens_refresh
+            state.tokens_access = data.access
+            console.log('state.tokens_access: ', state.tokens_access);
+            state.tokens_refresh = data.refresh
+            console.log('state.tokens_refresh: ', state.tokens_refresh);
+            writePersistentLocalStorage("tokens_access", data.access)
+            writePersistentLocalStorage("tokens_refresh", data.refresh)
         },
-        SET_USERNAME(state, username) {
+        SET_USERNAME(state, username:string) {
             state.username = username
         },
     },
