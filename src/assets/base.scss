@@ -9,8 +9,6 @@
     --white: #ffffff;
 }
 
-
-
 * {
     box-sizing: border-box;
 }
@@ -29,4 +27,75 @@ span {
     margin: 0;
     width: fit-content;
     height: fit-content;
+}
+
+.checkbox {
+    &-base {
+        appearance: none; 
+        -webkit-appearance: none; 
+        -moz-appearance: none; 
+        width: 19px; 
+        height: 19px; 
+        border: 1px solid rgb(153, 153, 153);
+        border-radius: 6px; 
+        cursor: pointer; 
+        outline: none; 
+        transition: border-color 0.3s; 
+        position: relative;
+        &:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        &:active {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        &::before {
+            content: ""; 
+            display: block; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            width: 10px; 
+            height: 10px; 
+            border: 2px solid transparent; 
+            border-top: none; 
+            border-left: none; 
+            transform-origin: center; 
+        }
+        &:checked {
+            border-color: transparent; 
+            background-color: rgb(46, 210, 186); 
+            &:hover {
+                background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), rgb(46, 210, 186);
+            }
+            &:active {
+                background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), rgb(46, 210, 186);
+            }
+            &::before {
+                border-color: transparent;
+                border-top: 2px solid #fff; 
+                border-left: 2px solid #fff; 
+            }
+        }
+    }
+
+    &-mixed {
+        &:checked {
+            border-color: transparent;
+            background-color: rgb(46, 210, 186); 
+            &::before {
+                content: ""; 
+                display: block; 
+                position: absolute; 
+                top: 50%; 
+                left: 50%; 
+                transform: translate(-50%, -50%); 
+                width: 8px; 
+                height: 2px; 
+                background: #fff;
+                border-top: none; 
+                border-left: none; 
+            }
+        }
+    }
 }

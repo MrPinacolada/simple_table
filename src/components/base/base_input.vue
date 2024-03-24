@@ -48,7 +48,7 @@ export default {
         maskInput() {
             if (this.mask && this.input_value) {
                 this.$nextTick(() => {
-                    this.input_value = parseFloat(
+                    this.input_value = Number(
                         onlyNumbers(this.input_value)
                     ).toLocaleString()
                 })
@@ -65,9 +65,13 @@ export default {
     display: grid;
     gap: 8px;
     grid-template-columns: 1fr;
-    width: 100%;
+    width: v-bind(wh);
+    .top,
+    .bottom {
+        width: fit-content;
+    }
     input {
-        width: v-bind(wh);
+        width: 100%;
         height: v-bind(he);
         border-radius: 6px;
         box-shadow: inset 0px 1px 2px 0px rgba(0, 0, 0, 0.25);

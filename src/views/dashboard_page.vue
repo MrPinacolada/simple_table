@@ -18,18 +18,19 @@
                             span.articul.underlined-dashed 119203059, 
                             span.articul.underlined-dashed 124366343, 
                             span.articul.underlined-dashed 59801844 
+                base_button(placeholder='Добавить' is_disabled=true)
 
             div.dashboard-table
                 table
                     thead
                         tr
                             th.column-checkbox
-                                input(type="checkbox")
+                                input.checkbox-base.checkbox-mixed(type="checkbox")
                             th.column-regular(v-for="column in columns" :key="column") {{ column }}
                     tbody
                         tr(v-for="(item, index) in items" :key="index")
                             td.column-checkbox
-                                 input(type="checkbox")
+                                 input.checkbox-base(type="checkbox")
                             td.column-images
                                 img(:src='item.images[0]' lazy alt='photo')
                             td.column-id
@@ -59,6 +60,7 @@ import base_input from "@/components/base/base_input.vue"
 import { apiGet } from "@/services/api"
 import { truncateString } from "@/helpers/truncateString"
 import noimg from "@/assets/image/icons/no-image.svg"
+import base_button from "@/components/base/base_button.vue"
 
 interface Table_data {
     images: string[]
@@ -78,6 +80,7 @@ export default {
     components: {
         default_layout,
         base_input,
+        base_button,
     },
     data() {
         return {
@@ -167,6 +170,8 @@ export default {
         &-search {
             display: flex;
             justify-content: flex-start;
+            align-items: center;
+            gap: 20px;
             .underlined-dashed {
                 border-bottom: 1px dashed var(--gray);
             }
