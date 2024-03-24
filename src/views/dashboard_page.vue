@@ -25,15 +25,38 @@
                     thead
                         tr
                             th.column-checkbox
-                                input.checkbox-base.checkbox-mixed(type="checkbox")
-                            th.column-regular(v-for="column in columns" :key="column") {{ column }}
+                                input.checkbox-base.checkbox-mixed(type="checkbox" :checked='is__head_checkbox')
+                            th(v-for="column in columns" :key="column")
+                                div.column-regular(@click='sortByNumbers(column.id,column.is_sorted), column.is_sorted = !column.is_sorted')
+                                    p.font-gray {{ column.label }}
+                                    img(v-if='column.is_sortable' :style='{ transform: column.is_sorted ? "rotate(180deg)" : "rotate(0)" }' src='../assets/image/icons/arrow.svg')
+                        tr(v-show='is_head_actions')
+                            th.column-menu(colspan="10")
+                                div.flexbox
+                                    div.wrapper-column
+                                        div.delete-checked
+                                            p.font-base Выбрано 2 из 4
+                                            button.head-butt(@click='deleteSelected') 
+                                                img(src='../assets/image/icons/delete-bold-small.svg')
+                                                p.font-base Удалить выделенные
+                                        //- div.reset-filters
+                                        //-     p.font-base Выбрано 2 из 4
+                                        //-     button.head-butt 
+                                        //-         p.cont-base Сбросить фильтры
+                                    div.price-edit
+                                        p.font-base Для всех выделенных
+                                        base_input(he='30px' wh='135px' placeholder='₽' @base_input='handleMinInput' mask=true  ) 
+                                        base_input(he='30px' wh='135px' placeholder='₽' @base_input='handleMaxInput' mask=true  ) 
+
                     tbody
                         tr(v-for="(item, index) in items" :key="index")
                             td.column-checkbox
-                                 input.checkbox-base(type="checkbox")
+                                 input.checkbox-base(type="checkbox" v-model='item.is_checked')
                             td.column-images
                                 img(:src='item.images[0]' lazy alt='photo')
                             td.column-id
+                                button 
+                                    img(src='../assets/image/icons/link.svg')
                                 p.font-base {{ item.remote_id }}
                             td.column-brand
                                 p.font-base {{ truncateString(item.brand_name,13)||'Нет бренда' }}
@@ -48,7 +71,8 @@
                             td.column-max
                                 base_input(he='30px' wh='135px' placeholder='₽' :value='item.max_price' mask=true )
                             td.column-delete
-                                img(src="../assets/image/icons/delete.svg")
+                                button 
+                                    img(src="../assets/image/icons/delete.svg")
 
 
 
@@ -72,6 +96,7 @@ interface Table_data {
     min_price: string
     max_price: string
     delete: string
+    is_checked: boolean
 }
 
 export default {
@@ -83,33 +108,61 @@ export default {
         base_button,
     },
     data() {
+        const columns = [
+            {
+                label: "Фото",
+                is_sortable: false,
+            },
+            {
+                label: "Артикул продавца",
+                is_sortable: false,
+            },
+            {
+                label: "Бренд",
+                is_sortable: false,
+            },
+            {
+                label: "Название",
+                is_sortable: false,
+            },
+            {
+                label: "Остаток, шт",
+                is_sortable: true,
+                id: "quantity",
+                is_sorted: false,
+            },
+            {
+                label: "Текущая цена",
+                is_sortable: true,
+                id: "price",
+                is_sorted: false,
+            },
+            {
+                label: "Минимальная цена",
+                is_sortable: true,
+                id: "min_price",
+                is_sorted: false,
+            },
+            {
+                label: "Максимальная цена",
+                is_sortable: true,
+                id: "max_price",
+                is_sorted: false,
+            },
+            {
+                label: "Удалить",
+                is_sortable: false,
+            },
+        ]
+        const items = [] as Table_data[]
+        const is_head_actions = false
+
         return {
-            columns: [
-                "Фото",
-                "Артикул продавца",
-                "Бренд",
-                "Название",
-                "Остаток, шт",
-                "Текущая цена",
-                "Минимальная цена",
-                "Максимальная цена",
-                "Удалить",
-            ],
-            items: [
-                // {
-                //     images: [],
-                //     remote_id: "Data 2",
-                //     brand_name: "Data 3",
-                //     title: "Data 4",
-                //     quantity: "Data 5",
-                //     price: "Data 6",
-                //     min_price: "Data 7",
-                //     max_price: "Data 8",
-                //     delete: "Data 9",
-                // },
-            ] as Table_data[],
+            columns,
+            items,
             truncateString,
             noimg,
+            is_head_actions,
         }
     },
     methods: {
@@ -118,15 +171,51 @@ export default {
                 const data = await apiGet({ url: "product/" })
                 if (!data?.data) return
                 this.items = data.data.results
-                this.items.forEach((item) => {
+                this.items = this.items.map((item) => {
                     if (!item.images?.length) {
                         item.images.push(noimg)
                     }
+
+                    const newItem = {
+                        ...item,
+                        is_checked: false,
+                    }
+                    return newItem
                 })
                 console.log(data.data)
             } catch (error) {
                 console.log("error: ", error)
             }
+        },
+        deleteSelected() {
+            const to_delete = this.items.filter((item) => item.is_checked)
+            const only_id = to_delete.map((item) => item.remote_id)
+            console.log("Удалить", only_id)
+        },
+        handleMinInput(value: number) {
+            this.items.forEach((item) => {
+                if (item.is_checked) item.min_price = value.toLocaleString()
+            })
+        },
+        handleMaxInput(value: number) {
+            this.items.forEach((item) => {
+                if (item.is_checked) item.max_price = value.toLocaleString()
+            })
+        },
+        sortByNumbers(id: string, is_sorted: boolean) {
+            if (!id) return
+            this.items.sort((a, b) => {
+                const valueA = parseFloat(a[id])
+                const valueB = parseFloat(b[id])
+                const sum = !is_sorted ? valueA - valueB : valueB - valueA
+                return sum
+            })
+        },
+    },
+    computed: {
+        is__head_checkbox() {
+            this.is_head_actions = this.items.some((item) => item.is_checked)
+            return this.is_head_actions
         },
     },
     mounted() {
@@ -196,11 +285,15 @@ export default {
                 th {
                     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
                 }
+
                 .column {
                     &-checkbox {
                         width: 50px;
                     }
                     &-regular {
+                        display: flex;
+                        align-items: center;
+                        cursor: pointer;
                     }
                     &-images {
                         img {
@@ -210,9 +303,79 @@ export default {
                         }
                     }
                     &-delete {
-                        img {
+                        button {
+                            border: none;
+                            background-color: transparent;
                             width: 25px;
                             height: 25px;
+                            cursor: pointer;
+                        }
+                    }
+                    &-id {
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        button {
+                            border: none;
+                            background-color: transparent;
+                            width: 25px;
+                            height: 25px;
+                            cursor: pointer;
+                        }
+                    }
+                    &-menu {
+                        background: rgba(19, 38, 57, 0.14);
+                        .flexbox {
+                            display: flex;
+                            gap: 40px;
+                            align-items: center;
+                            width: 100%;
+                            justify-content: space-between;
+
+                            .wrapper-column {
+                                display: flex;
+                                gap: 40px;
+                                align-items: center;
+                                .head-butt {
+                                    border: none;
+                                    border-radius: 6px;
+                                    background: rgb(242, 241, 243);
+                                    display: flex;
+                                    flex-direction: row;
+                                    justify-content: flex-start;
+                                    align-items: center;
+                                    padding: 5px 12px 5px 10px;
+                                    gap: 5px;
+                                    cursor: pointer;
+                                    &:hover {
+                                        background: linear-gradient(
+                                                rgba(0, 0, 0, 0.05),
+                                                rgba(0, 0, 0, 0.05)
+                                            ),
+                                            rgb(242, 241, 243);
+                                    }
+                                    &:active {
+                                        background: linear-gradient(
+                                                rgba(0, 0, 0, 0.1),
+                                                rgba(0, 0, 0, 0.1)
+                                            ),
+                                            rgb(242, 241, 243);
+                                    }
+                                }
+                                .delete-checked,
+                                .reset-filters {
+                                    display: flex;
+                                    gap: 5px;
+                                    align-items: center;
+                                }
+                            }
+
+                            .price-edit {
+                                display: flex;
+                                gap: 58px;
+                                align-items: center;
+                                margin-right: 8.7em;
+                            }
                         }
                     }
                 }

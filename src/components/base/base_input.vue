@@ -2,7 +2,7 @@
     div.input-wrapper
         div.top
             slot(name='top_slot')
-        input(v-model='input_value' @update:model-value="maskInput()"  type='text' :placeholder='placeholder' @input="handleInput")
+        input(v-model='input_value'  @update:model-value="maskInput()"  type='text' :placeholder='placeholder' @input="handleInput")
         div.bottom
             slot(name='bottom_slot')
 
@@ -37,7 +37,7 @@ export default {
     },
     data() {
         return {
-            input_value: this.value ?? "",
+            input_value: this.value || "",
         }
     },
     methods: {
@@ -55,8 +55,11 @@ export default {
             }
         },
     },
-
-    computed: {},
+    watch: {
+        value(newValue) {
+            this.input_value = newValue
+        },
+    },
 }
 </script>
 
