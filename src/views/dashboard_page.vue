@@ -255,7 +255,7 @@ export default {
 <style scoped lang="scss">
 .wrapper {
     display: grid;
-    width: 100%;
+    width: 105%;
     height: 100%;
     justify-items: center;
     align-items: start;
