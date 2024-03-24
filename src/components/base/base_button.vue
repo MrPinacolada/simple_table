@@ -6,7 +6,7 @@
 
 <script lang="ts">
 export default {
-    name: "base_input",
+    name: "base_button",
     props: {
         placeholder: {
             type: String,

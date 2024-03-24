@@ -76,6 +76,8 @@
                             td.column-delete
                                 button 
                                     img(src="../assets/image/icons/delete.svg")
+                base_pagination(:value='total_pages' :current='currentPage' @update:current='paginateTable')
+            
 
 
 
@@ -88,6 +90,7 @@ import { apiGet } from "@/services/api"
 import { truncateString } from "@/helpers/truncateString"
 import noimg from "@/assets/image/icons/no-image.svg"
 import base_button from "@/components/base/base_button.vue"
+import base_pagination from "@/components/base/base_pagination.vue"
 
 interface Table_data {
     images: string[]
@@ -109,6 +112,7 @@ export default {
         default_layout,
         base_input,
         base_button,
+        base_pagination,
     },
     data() {
         const columns = [
@@ -159,6 +163,8 @@ export default {
         ]
         const items = [] as Table_data[]
         const is_head_actions = false
+        const total_pages = 0
+        const currentPage = 0
 
         return {
             columns,
@@ -166,14 +172,21 @@ export default {
             truncateString,
             noimg,
             is_head_actions,
+            total_pages,
+            currentPage,
         }
     },
     methods: {
-        async getTableData() {
+        async getTableData(offset: number, limit: number) {
             try {
-                const data = await apiGet({ url: "product/" })
+                const data = await apiGet({
+                    url: "product/",
+                    query: { limit: limit, offset: offset },
+                })
                 if (!data?.data) return
                 this.items = data.data.results
+                this.total_pages = Math.ceil(data.data.count / 10)
+                this.currentPage = Math.ceil((offset + 1) / 10)
                 this.items = this.items.map((item) => {
                     if (!item.images?.length) {
                         item.images.push(noimg)
@@ -214,6 +227,9 @@ export default {
                 return sum
             })
         },
+        paginateTable(value: number) {
+            this.getTableData(value * 10, 10)
+        },
     },
     computed: {
         is__head_checkbox() {
@@ -222,7 +238,7 @@ export default {
         },
     },
     mounted() {
-        this.getTableData()
+        this.getTableData(0, 10)
     },
 }
 </script>
@@ -269,6 +285,9 @@ export default {
             }
         }
         &-table {
+            display: grid;
+            justify-items: center;
+            gap: 20px;
             table {
                 width: 100%;
                 border-collapse: collapse;
