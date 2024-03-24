@@ -49,6 +49,9 @@
                                         base_input(he='30px' wh='135px' placeholder='₽' @base_input='handleMaxInput' mask=true  ) 
 
                     tbody
+                        tr(v-if='!items.length')
+                            th.skeleton(v-for="column in columns" :key="column")
+                                div
                         tr(v-for="(item, index) in items" :key="index")
                             td.column-checkbox
                                  input.checkbox-base(type="checkbox" v-model='item.is_checked')
@@ -269,6 +272,19 @@ export default {
             table {
                 width: 100%;
                 border-collapse: collapse;
+                .skeleton {
+                    height: 40px;
+                    padding: 10px;
+
+                    div {
+                        height: 100%;
+                        width: 100%;
+                        background-color: #dbd6d6;
+                        border-radius: 6px;
+                        animation: loading 1s ease-in-out infinite;
+                    }
+                }
+
                 th,
                 td {
                     border: none;
@@ -381,6 +397,18 @@ export default {
                 }
             }
         }
+    }
+}
+
+@keyframes loading {
+    0% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 0.6;
     }
 }
 </style>

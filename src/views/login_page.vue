@@ -13,13 +13,16 @@ div
                     base_input(he='50px' wh='100%' placeholder='youremail@mail.ru' @base_input='handleMailInput')
                         template(v-slot:top_slot)
                             p.font-caption Email
+                        template(v-if='is_auth_err' v-slot:bottom_slot)
+                            p.font-error Неверный логин или пароль
                     base_input(he='50px' wh='100%' placeholder='Ваш пароль' @base_input='handlePassInput' )
                         template(v-slot:top_slot)
                             p.font-caption Пароль
                         template(v-slot:bottom_slot)
+                            p.font-error(v-if='is_auth_err') Неверный логин или пароль
                             p.font-link Забыли пароль?
                 div.action-butt
-                    base_button(placeholder='Вход' :is_disabled='disabled' @base_click='handleLogin')
+                    base_button(placeholder='Вход' :is_disabled='disabled' :is_loading='is_loading' @base_click='handleLogin')
 
 
 </template>
@@ -44,6 +47,8 @@ export default {
             login: "",
             password: "",
             disabled: true,
+            is_auth_err: false,
+            is_loading: false,
         }
     },
     methods: {
@@ -59,20 +64,33 @@ export default {
             this.validateInput(this.login, this.password)
         },
         async handleLogin() {
+            this.is_auth_err = false
+            this.is_loading = true
+            this.disabled = true
             try {
-                const data = await apiPost({
+                const { res, errors } = await apiPost({
                     url: "user/jwt/create/",
                     body: {
                         email: this.login,
                         password: this.password,
                     },
                 })
-                if (!data) return
-                table_store.commit("SET_AUTH", data.data)
+
+                if (!res && errors) {
+                    if (errors.response.status === 401) {
+                        console.log("Неверный пароль")
+                        this.is_auth_err = true
+                    }
+                    return
+                }
+                table_store.commit("SET_AUTH", res)
                 table_store.commit("SET_USERNAME", this.login)
                 this.$router.push("/dashboard")
             } catch (error) {
                 console.log(error)
+            } finally {
+                this.is_loading = false
+                this.disabled = false
             }
         },
     },

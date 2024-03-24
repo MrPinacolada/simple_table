@@ -58,6 +58,8 @@ export const apiPost = async ({
     body,
     headers,
 }: ApiFunctionArgs) => {
+    let res = null
+    let errors = null
     try {
         const response = await api.post(url + `?${setQuery(query)}`, body, {
             headers: {
@@ -66,22 +68,23 @@ export const apiPost = async ({
             },
         })
 
-        const data = response.data
-
-        return { data }
+        res = response.data
     } catch (error: any) {
         console.log(error)
+        errors = error
+    } finally {
+        return { res, errors }
     }
 }
 
 const refreshAccessToken = async () => {
     try {
-        const data = await apiPost({
+        const { res, errors } = await apiPost({
             url: "/user/jwt/refresh/",
             body: { refresh: table_store.state.tokens_refresh },
         })
-        if (!data?.data) return
-        table_store.state.tokens_access = data.data.access
+        if (!res) return
+        table_store.state.tokens_access = res.access
     } catch (error) {
         console.error(error)
     }

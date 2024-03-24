@@ -1,5 +1,7 @@
 <template lang="pug">
-    button.base-butt(@click='handleClick' :disabled='is_disabled' :class="{disabled: is_disabled}")  {{ placeholder }}
+    button.base-butt(@click='handleClick' :disabled='is_disabled' :class="{disabled: is_disabled}")
+        span.loader(v-if='is_loading')
+        p(v-else) {{ placeholder }}
 </template>
 
 <script lang="ts">
@@ -13,6 +15,10 @@ export default {
         is_disabled: {
             type: Boolean,
             required: true,
+        },
+        is_loading: {
+            type: Boolean,
+            required: false,
         },
     },
     data() {
@@ -65,6 +71,26 @@ export default {
     :active {
         background: rgb(242, 241, 243);
         color: rgb(153, 153, 153);
+    }
+}
+
+.loader {
+    width: 20px;
+    height: 20px;
+    border: 5px solid rgb(46, 210, 186);
+    border-bottom-color: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
     }
 }
 </style>

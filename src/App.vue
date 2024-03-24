@@ -1,5 +1,5 @@
 <template>
-    <router-view v-slot="{ Component, route }">
+    <router-view v-slot="{ Component }">
         <transition name="fade">
             <component :is="Component" />
         </transition>
@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { RouterLink, RouterView } from "vue-router"
+import { RouterView } from "vue-router"
 import { getLocalStorage } from "@/services/localStorage"
 import { table_store } from "@/store/table_store"
 
@@ -25,7 +25,7 @@ export default {
         },
     },
     mounted() {
-        localStorage.clear()
+        // localStorage.clear()
         if (this.isSignedIn()) {
             const auth = {
                 access: getLocalStorage("tokens_access"),
