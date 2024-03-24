@@ -31,7 +31,6 @@ export default {
             this.$emit("base_click", data)
         },
     },
-    computed: {},
 }
 </script>
 

@@ -11,7 +11,7 @@ export const table_store = createStore({
         }
     },
     mutations: {
-        SET_AUTH(state, data: { access: string; refresh: string }) {
+        SET_AUTH(state:any, data: { access: string; refresh: string }) {
             state.isAuthenticated = true
             state.tokens_access = data.access
             console.log('state.tokens_access: ', state.tokens_access);
@@ -20,7 +20,7 @@ export const table_store = createStore({
             writePersistentLocalStorage("tokens_access", data.access)
             writePersistentLocalStorage("tokens_refresh", data.refresh)
         },
-        SET_USERNAME(state, user_name: string) {
+        SET_USERNAME(state:any, user_name: string) {
             state.user_name = user_name
             writePersistentLocalStorage("user_name", user_name)
         },

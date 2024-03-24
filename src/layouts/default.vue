@@ -18,7 +18,6 @@ import { table_store } from "@/store/table_store"
 
 export default {
     name: "default-layout",
-    components: {},
     data() {
         return {
             table_store,

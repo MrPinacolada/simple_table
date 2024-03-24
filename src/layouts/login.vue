@@ -6,8 +6,6 @@
                 p.font-base Поддержка
                 img(src='../assets/image/icons/telegram.svg' style='width:30px;height:30px;'  alt='tg')
                 img(src='../assets/image/icons/whatsapp.svg' style='width:30px;height:30px;'  alt='wh')
-                
-
     main.login-layout
         slot
 </template>
