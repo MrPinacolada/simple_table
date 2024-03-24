@@ -66,5 +66,6 @@ main {
     height: calc(100vh - 80px);
     background: #f2f2f2;
     padding-top: 30px;
+    overflow: scroll;
 }
 </style>

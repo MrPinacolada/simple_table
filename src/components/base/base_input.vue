@@ -2,13 +2,15 @@
     div.input-wrapper
         div.top
             slot(name='top_slot')
-        input(v-model='input_value' type='text' :placeholder='placeholder' @input="handleInput")
+        input(v-model='input_value' @update:model-value="maskInput()"  type='text' :placeholder='placeholder' @input="handleInput")
         div.bottom
             slot(name='bottom_slot')
 
 </template>
 
 <script lang="ts">
+import { onlyNumbers } from "@/helpers/onlyNumbers"
+
 export default {
     name: "base_input",
     props: {
@@ -28,6 +30,10 @@ export default {
             type: String,
             required: false,
         },
+        mask: {
+            type: Boolean,
+            required: false,
+        },
     },
     data() {
         return {
@@ -38,7 +44,18 @@ export default {
         handleInput() {
             this.$emit("base_input", this.input_value)
         },
+
+        maskInput() {
+            if (this.mask && this.input_value) {
+                this.$nextTick(() => {
+                    this.input_value = parseFloat(
+                        onlyNumbers(this.input_value)
+                    ).toLocaleString()
+                })
+            }
+        },
     },
+
     computed: {},
 }
 </script>

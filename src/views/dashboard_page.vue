@@ -31,21 +31,21 @@
                             td.column-checkbox
                                  input(type="checkbox")
                             td.column-images
-                                img(:src='item.images?item.images[0]:""' lazy alt='photo')
+                                img(:src='item.images[0]' lazy alt='photo')
                             td.column-id
                                 p.font-base {{ item.remote_id }}
                             td.column-brand
-                                p.font-base {{ item.brand_name }}
+                                p.font-base {{ truncateString(item.brand_name,13)||'Нет бренда' }}
                             td.column-title
-                                p.font-base {{ item.title}}
+                                p.font-base {{ truncateString(item.title,37)|| 'Нет названия'}}
                             td.column-quantity
                                 p.font-base {{ item.quantity}}
                             td.column-price
-                                p.font-base {{ item.price}}
+                                p.font-base {{ Number(parseFloat(item.price)).toLocaleString() + ' ₽' }}
                             td.column-min
-                                base_input(he='30px' wh='135px' placeholder='₽' :value='item.min_price'  )
+                                base_input(he='30px' wh='135px' placeholder='₽' :value='item.min_price' mask=true  )
                             td.column-max
-                                base_input(he='30px' wh='135px' placeholder='₽' :value='item.max_price'  )
+                                base_input(he='30px' wh='135px' placeholder='₽' :value='item.max_price' mask=true )
                             td.column-delete
                                 img(src="../assets/image/icons/delete.svg")
 
@@ -57,6 +57,21 @@
 import default_layout from "@/layouts/default.vue"
 import base_input from "@/components/base/base_input.vue"
 import { apiGet } from "@/services/api"
+import { truncateString } from "@/helpers/truncateString"
+import noimg from "@/assets/image/icons/no-image.svg"
+
+interface Table_data {
+    images: string[]
+    remote_id: string
+    brand_name: string
+    title: string
+    quantity: string
+    price: string
+    min_price: string
+    max_price: string
+    delete: string
+}
+
 export default {
     name: "dashboard",
 
@@ -78,18 +93,20 @@ export default {
                 "Удалить",
             ],
             items: [
-                {
-                    data1: "Data 1",
-                    data2: "Data 2",
-                    data3: "Data 3",
-                    data4: "Data 4",
-                    data5: "Data 5",
-                    data6: "Data 6",
-                    data7: "Data 7",
-                    data8: "Data 8",
-                    data9: "Data 9",
-                },
-            ],
+                // {
+                //     images: [],
+                //     remote_id: "Data 2",
+                //     brand_name: "Data 3",
+                //     title: "Data 4",
+                //     quantity: "Data 5",
+                //     price: "Data 6",
+                //     min_price: "Data 7",
+                //     max_price: "Data 8",
+                //     delete: "Data 9",
+                // },
+            ] as Table_data[],
+            truncateString,
+            noimg,
         }
     },
     methods: {
@@ -98,6 +115,11 @@ export default {
                 const data = await apiGet({ url: "product/" })
                 if (!data?.data) return
                 this.items = data.data.results
+                this.items.forEach((item) => {
+                    if (!item.images?.length) {
+                        item.images.push(noimg)
+                    }
+                })
                 console.log(data.data)
             } catch (error) {
                 console.log("error: ", error)
@@ -153,13 +175,21 @@ export default {
             table {
                 width: 100%;
                 border-collapse: collapse;
-
                 th,
                 td {
-                    border: 1px solid #ccc;
+                    border: none;
                     padding: 8px;
                     text-align: center;
                     height: 60px;
+                }
+                th {
+                    &:not(:nth-child(-n + 2)) {
+                        text-align: left;
+                    }
+                }
+                tbody tr,
+                th {
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
                 }
                 .column {
                     &-checkbox {

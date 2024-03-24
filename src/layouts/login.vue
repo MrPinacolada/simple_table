@@ -40,5 +40,6 @@ export default {
 main {
     height: calc(100vh - 80px);
     background: #f2f2f2;
+    overflow: hidden;
 }
 </style>

@@ -32,7 +32,6 @@ export const apiGet = async ({ url, query, headers }: ApiFunctionArgs) => {
         console.error(error)
         counter = counter + 1
         if (error.response.status === 401 && counter < 5) {
-            console.log("counter: ", counter)
             try {
                 await refreshAccessToken()
                 const response = await apiGet({
@@ -82,9 +81,7 @@ const refreshAccessToken = async () => {
             body: { refresh: table_store.state.tokens_refresh },
         })
         if (!data?.data) return
-        console.log(data)
-        // accessToken = response.data.access
-        // return accessToken
+        table_store.state.tokens_access = data.data.access
     } catch (error) {
         console.error(error)
     }
