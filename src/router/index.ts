@@ -5,8 +5,15 @@ import { table_store } from "@/store/table_store"
 
 const routes = [
     { path: "/", redirect: "/login" },
-    { path: "/login", component: login_page },
-    { path: "/dashboard", component: dashboard, meta: { requiresAuth: true } },
+    {
+        path: "/login",
+        component: login_page,
+    },
+    {
+        path: "/dashboard",
+        component: dashboard,
+        meta: { requiresAuth: true },
+    },
 ]
 
 const router = createRouter({

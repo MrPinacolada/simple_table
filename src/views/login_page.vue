@@ -1,4 +1,5 @@
 <template lang="pug">
+div  
   login_layout
     div.container
         div.login-box
@@ -85,6 +86,7 @@ export default {
     display: grid;
     align-items: center;
     justify-items: center;
+    overflow: hidden;
     .login-box {
         width: 430px;
         height: 500px;

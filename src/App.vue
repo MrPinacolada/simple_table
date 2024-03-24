@@ -1,5 +1,9 @@
 <template>
-    <RouterView />
+    <router-view v-slot="{ Component, route }">
+        <transition name="fade">
+            <component :is="Component" />
+        </transition>
+    </router-view>
 </template>
 
 <script lang="ts">
@@ -21,7 +25,7 @@ export default {
         },
     },
     mounted() {
-        // localStorage.clear()
+        localStorage.clear()
         if (this.isSignedIn()) {
             const auth = {
                 access: getLocalStorage("tokens_access"),
@@ -35,4 +39,14 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+}
+</style>

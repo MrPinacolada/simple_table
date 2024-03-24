@@ -8,7 +8,7 @@
                 img(src='../assets/image/icons/whatsapp.svg' style='width:30px;height:30px;'  alt='wh')
                 
 
-    main
+    main.login-layout
         slot
 </template>
 
@@ -37,7 +37,7 @@ export default {
         }
     }
 }
-main {
+.login-layout {
     height: calc(100vh - 80px);
     background: #f2f2f2;
     overflow: hidden;

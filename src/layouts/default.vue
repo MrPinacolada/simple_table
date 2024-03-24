@@ -1,4 +1,5 @@
 <template lang="pug">
+div
     header.head-default 
         section.container
             nav.container-butts   
@@ -8,7 +9,7 @@
                     p.font-base {{ table_store.state.user_name }}
                     img(src='../assets/image/icons/arrow.svg')
 
-    main
+    main.default-layout
         slot
 </template>
 
@@ -62,7 +63,7 @@ export default {
         }
     }
 }
-main {
+.default-layout {
     height: calc(100vh - 80px);
     background: #f2f2f2;
     padding-top: 30px;
