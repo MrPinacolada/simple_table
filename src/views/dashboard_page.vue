@@ -5,7 +5,7 @@
             div.dashboard-title
                 h2.font-h2 Мои товары
                 img(src='../assets/image/icons/question-semibold.svg')
-                p.font-gray 4 из 30
+                p.font-gray {{ pag_limit + (items.length< pag_ofsset?items.length:pag_ofsset)}} из {{ total_items }}
             div.dashboard-subtitle
                 p.font-base Добавьте товары вашего магазина из одной товарной и ценовой категории (разница цены не больше 15%)
                 p.font-base Для добавления нескольких товаров введите несколько артикулов через запятую или используя клавишу Enter
@@ -76,7 +76,7 @@
                             td.column-delete
                                 button 
                                     img(src="../assets/image/icons/delete.svg")
-                base_pagination(:value='total_pages' :current='currentPage' @update:current='paginateTable')
+                base_pagination(:value='total_pages' :current='current_page' @update:current='paginateTable')
             
 
 
@@ -164,7 +164,10 @@ export default {
         const items = [] as Table_data[]
         const is_head_actions = false
         const total_pages = 0
-        const currentPage = 0
+        const current_page = 0
+        const total_items = 0
+        const pag_ofsset = 0
+        const pag_limit = 0
 
         return {
             columns,
@@ -173,11 +176,16 @@ export default {
             noimg,
             is_head_actions,
             total_pages,
-            currentPage,
+            current_page,
+            pag_ofsset,
+            pag_limit,
+            total_items,
         }
     },
     methods: {
         async getTableData(offset: number, limit: number) {
+            this.pag_ofsset = offset
+            this.pag_limit = limit
             try {
                 const data = await apiGet({
                     url: "product/",
@@ -185,8 +193,9 @@ export default {
                 })
                 if (!data?.data) return
                 this.items = data.data.results
+                this.total_items = data.data.count
                 this.total_pages = Math.ceil(data.data.count / 10)
-                this.currentPage = Math.ceil((offset + 1) / 10)
+                this.current_page = Math.ceil((offset + 1) / 10)
                 this.items = this.items.map((item) => {
                     if (!item.images?.length) {
                         item.images.push(noimg)
